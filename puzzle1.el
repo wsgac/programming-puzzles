@@ -29,7 +29,7 @@
 (defvar *azimuth* 0)
 
 ;; Position relative to start. car - x, cdr - y
-(defvar *position* '(0 . 0))
+(defvar *position* (cons 0 0))
 
 (defun change-azimuth (rotation)
   (cond
@@ -47,7 +47,6 @@
 
 (defun change-position (direction)
   (let ((dir (split-direction direction)))
-    (message "Type: %s" (type-of (car dir)))
     (change-azimuth (car dir))
     (if (zerop (mod *azimuth* 2))
         ;; y-direction
@@ -57,13 +56,15 @@
 
 (defun solve-puzzle (&optional directions)
   ;; reset *position* and *azimuth*
-  ;; (setf *azimuth* 0)
-  ;; (setf *position* '(0 . 0))
+  (setf *azimuth* 0
+        *position* (cons 0 0))
   ;; *position* update
   (mapcar #'change-position (or directions *directions*))
   ;; Calculate block-metric distance
   (+ (abs (car *position*)) (abs (cdr *position*))))
 
-;; (defun test-solution ()
-;;   (and
-;;    (= (solve-puzzle '(r2 l2)) 5)))
+(defun test-solution ()
+  (and
+   (= (solve-puzzle '(r2 l3)) 5)
+   (= (solve-puzzle '(r2 r2 r2)) 2)
+   (= (solve-puzzle '(r5 l5 r5 r3)) 12)))
