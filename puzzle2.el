@@ -79,6 +79,28 @@
 ;; Finally, after five more moves, you end at 3.
 ;; So, given the actual keypad layout, the code would be 5DB3.
 
+(defvar *map*
+  '(1 ("u" 1 "d" 3 "l" 1 "r" 1)
+      2 ("u" 2 "d" 6 "l" 2 "r" 3)
+      3 ("u" 1 "d" 7 "l" 2 "r" 4)
+      4 ("u" 4 "d" 8 "l" 3 "r" 4)
+      5 ("u" 5 "d" 5 "l" 5 "r" 6)
+      6 ("u" 2 "d" 10 "l" 5 "r" 7)
+      7 ("u" 3 "d" 11 "l" 6 "r" 8)
+      8 ("u" 4 "d" 12 "l" 7 "r" 9)
+      9 ("u" 9 "d" 9 "l" 8 "r" 9)
+      10 ("u" 6 "d" 10 "l" 10 "r" 11)
+      11 ("u" 7 "d" 13 "l" 10 "r" 12)
+      12 ("u" 8 "d" 12 "l" 11 "r" 12)
+      13 ("u" 11 "d" 13 "l" 13 "r" 13)))
+
+(defun move-2-alt (direction)
+  "Data-driven move function using a map"
+  (assert (and (characterp direction)
+               (find direction '(?u ?d ?r ?l) :test #'char-equal)))
+  (setf *position* (lax-plist-get (lax-plist-get *map* *position*)
+                                  (char-to-string (downcase direction)))))
+
 (defun move-2 (direction)
   (cond
    ((char-equal direction ?u)
@@ -107,5 +129,5 @@
    for instruction in (or instructions *instructions*)
    collect (cl-loop
 	    for char across instruction
-	    do (move-2 char)
+	    do (move-2-alt char)
 	    finally (return (format "%x" *position*)))))
