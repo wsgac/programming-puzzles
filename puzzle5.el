@@ -48,3 +48,18 @@
 ;; You almost choke on your popcorn as the final character falls into place, producing the password 05ace8e3.
 
 ;; Given the actual Door ID and this new method, what is the password? Be extra proud of your solution if it uses a cinematic "decrypting" animation.
+
+(defun solve-puzzle-2 (id digits)
+  (cl-loop
+   with found-indices = nil
+   with password = (make-string digits ? )
+   for i from 0
+   for input = (md5 (concat id (number-to-string i)))
+   for index = (- (elt input 5) ?0)
+   until (= digits (length found-indices))
+   when (and (starts-with "00000" input)
+             (<= 0 index 7)
+             (not (member index found-indices)))
+   do (progn (push index found-indices)
+             (setf (elt password index) (elt input 6)))
+   finally (return password)))
