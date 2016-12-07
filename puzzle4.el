@@ -968,8 +968,8 @@
 		  "bqvvu-ydkykhwpa-klanwpekjo-966[kapvw]"
 		  "aoubshwq-pibbm-kcfygvcd-740[wnucy]"))
 
-(string-match "\\([a-z-]*\\)" "ala-ma-kota")
-(match-string 0 "ala-ma-kota")
+;; (string-match "\\([a-z-]*\\)" "ala-ma-kota")
+;; (match-string 0 "ala-ma-kota")
 
 (defun extract-components (str)
   (string-match "\\([a-z-]*\\)\\([0-9]+\\)\\[\\([a-z]+\\)\\]"
