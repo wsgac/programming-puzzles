@@ -2030,7 +2030,6 @@
   (and
    (string-match "\\(.\\)\\(.\\)\\2\\1" str)
    (not (string-match "\\(.\\)\\1\\{3\\}" str))))
-  
 
 (defun supports-tls-p (ip)
   (let ((split-ip (split-ip ip)))
@@ -2059,3 +2058,35 @@
 ;;     zazbz[bzb]cdb supports SSL (zaz has no corresponding aza, but zbz has a corresponding bzb, even though zaz and zbz overlap).
 
 ;; How many IPs in your puzzle input support SSL?
+
+(defun aba->bab (aba)
+  (let ((ba (substring aba 1)))
+    (concat ba (substring ba 0 1))))
+
+(defun find-aba (str)
+  (let* ((matched-1 (string-match "\\(.\\)\\(.\\)\\1" str))
+	 (match-1 (when matched-1 (match-string 0 str))))
+    (if (and matched-1
+	     (not (string-match "\\(.\\)\\1\\{2\\}" match-1)))
+	(if (<= (length str) 3)
+	    (list match-1)
+	  (cons match-1 (find-aba (substring str (1+ matched-1)))))
+      nil)))
+
+(defun supports-ssl-p (ip)
+  (let* ((split-ip (split-ip ip))
+	 (supernets (getf split-ip :free))
+	 (hypernets (getf split-ip :bracketed))
+	 (abas (mapcan #'find-aba supernets)))
+    (some (lambda (aba)
+	    (let ((bab (aba->bab aba)))
+	    (some (lambda (hypernet)
+		    (search bab hypernet)) hypernets))) abas)))
+
+(defun solve-puzzle-2 (&optional ips)
+  (cl-loop
+   for ip in (or ips *ip-addresses*)
+   count (supports-ssl-p ip)))
+
+;; Lack of negative lookahead
+;; Doesn't work: (.)(?!\1).(?!\1).\1
