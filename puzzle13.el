@@ -60,4 +60,22 @@
       (let* ((input (or input *input*))
              (poly (+ (* x x) (* 3 x) (* 2 x y) y (* y y) input)))
         (oddp (hamming-weight poly)))))
-    
+
+(defun print-maze (&optional input)
+  (let ((input (or input *input*)))
+    (princ
+     (with-output-to-string
+       (cl-loop
+	for y from 0 to 50
+	do (cl-loop
+	    for x from 0 to 50
+	    do (princ (cond
+		       ((and (= x 1) (= y 1)) "@")
+		       ((and (= x 31) (= y 39)) "@")
+		       ((wallp x y) "#")
+		       (t ".")))
+	    finally (princ "\n")))))))
+
+;; Answer: 92
+
+;; Answer 2: 124
